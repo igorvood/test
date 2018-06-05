@@ -5,3 +5,6 @@ and b.name = 'opened cursors current'
 /*and s.username = 'VOOD'
 and s.program like '%JDBC%'*/
 order by 1 desc
+
+
+
