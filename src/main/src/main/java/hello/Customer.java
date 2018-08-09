@@ -7,7 +7,7 @@ public class Customer {
 
     @Id
     @GeneratedValue
-    @ViewColumn(displayName = "id_1")
+    //@ViewColumn(displayName = "id_1")
     private Long id;
 
     @ViewColumn(displayName = "firstName_1")
@@ -16,12 +16,21 @@ public class Customer {
     @ViewColumn(displayName = "lastName_колонка")
     private String lastName;
 
-    protected Customer() {
+    @ViewColumn(displayName = "Тип колонка")
+    @ManyToOne
+    private TypeCustomer typeCustomer;
+
+    public Customer() {
     }
 
     public Customer(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public Customer(String firstName, String lastName, TypeCustomer typeCustomer) {
+        this(firstName,lastName );
+        this.typeCustomer = typeCustomer;
     }
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -43,6 +52,14 @@ public class Customer {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public TypeCustomer getTypeCustomer() {
+        return typeCustomer;
+    }
+
+    public void setTypeCustomer(TypeCustomer typeCustomer) {
+        this.typeCustomer = typeCustomer;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package hello;
 
+import com.vaadin.flow.component.Component;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -57,6 +59,8 @@ public class FieldForView<T> {
     public static class FieldProperty {
         private String displayName;
         private String fieldName;
+        private Component mappedField;
+
 
         public String getFieldName() {
             return fieldName;
@@ -73,5 +77,41 @@ public class FieldForView<T> {
         public void setDisplayName(String displayName) {
             this.displayName = displayName;
         }
+
+        public Component getMappedField() {
+            return mappedField;
+        }
+
+        public void setMappedField(Component mappedField) {
+            this.mappedField = mappedField;
+        }
     }
 }
+
+/*
+* // List of planets
+List<Planet> planets = new ArrayList<>();
+planets.add(new Planet(1, "Mercury"));
+planets.add(new Planet(2, "Venus"));
+planets.add(new Planet(3, "Earth"));
+
+ComboBox<Planet> select =
+    new ComboBox<>("Select or Add a Planet");
+select.setItems(planets);
+
+// Use the name property for item captions
+select.setItemCaptionGenerator(Planet::getName);
+
+// Allow adding new items and add
+// handling for new items
+select.setNewItemProvider(inputString -> {
+
+    Planet newPlanet = new Planet(planets.size(), inputString);
+    planets.add(newPlanet);
+
+    // Update combobox content
+    select.setItems(planets);
+
+    return Optional.of(newPlanet);
+});
+* */

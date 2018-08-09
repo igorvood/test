@@ -26,11 +26,12 @@ public abstract class AbstractGrid<T extends Customer, R extends JpaRepository> 
 
     private final Button addNewBtn;
 
-    public AbstractGrid(R repo, CustomerEditor editor, Class<T> type) {
+    public AbstractGrid(R repo, AbstractEditor editor, Class<T> type) {
         this.type = type;
         this.repo = repo;
         //this.editor = editor;
         this.grid = new Grid<>(type);
+        grid.setPageSize(2);
         this.filter = new TextField();
         this.addNewBtn = new Button("New customer", VaadinIcon.PLUS.create());
 
@@ -67,7 +68,6 @@ public abstract class AbstractGrid<T extends Customer, R extends JpaRepository> 
                     grid.getColumnByKey(r.getFieldName()).setSortable(true);
                 });
 
-        grid.getColumnByKey("id").setSortable(true);
         //grid.getColumnByKey("id").setWidth("150px").setFlexGrow(0);
 
         //filter.setPlaceholder("Filter by last name dsadasdasdas");

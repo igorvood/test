@@ -9,17 +9,16 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+/*
 @SpringComponent
 @UIScope
+*/
 public class AbstractEditor<T extends Customer, R extends JpaRepository> extends VerticalLayout implements KeyNotifier {
     private Class<T> type;
 
@@ -28,7 +27,7 @@ public class AbstractEditor<T extends Customer, R extends JpaRepository> extends
     private T customer;
 
     /* Fields to edit properties in Customer entity */
-    List<TextField> fields = new ArrayList<>();
+    Map<String, TextField> fields = new HashMap<>();
 //    TextField firstName = new TextField("First name");
 //    TextField lastName = new TextField("Last name");
 
@@ -37,8 +36,8 @@ public class AbstractEditor<T extends Customer, R extends JpaRepository> extends
     Button cancel = new Button("Cancel");
     Button delete = new Button("Delete", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
+    Binder<T> binder;
 
-    Binder<T> binder = new Binder<>(type);
     private AbstractEditor.ChangeHandler changeHandler;
 
 
@@ -47,19 +46,30 @@ public class AbstractEditor<T extends Customer, R extends JpaRepository> extends
         this.type = type;
         this.repository = repository;
 
+        this.binder = new Binder<>(type);
 
 
         final Map<String, FieldForView.FieldProperty> fieldsForView = new FieldForView<>(type).getListFields();
-        fieldsForView.entrySet().stream().forEach(e -> fields.add(new TextField(e.getValue().getDisplayName())));
+        final Set<String> fieldNameSet = fieldsForView.keySet();
+        for (String fieldName:fieldNameSet){
+            fields.put(fieldName, new TextField(fieldsForView.get(fieldName).getDisplayName()) );
+        }
+
+
 
         List<Component> components = new ArrayList<>(fields.size() + 1);
-        components.addAll(fields);
+        components.addAll(fields.values());
         components.add(actions);
-        Component[] myArray = (Component[]) components.toArray();
+        Component[] myArray = components.toArray(new Component[components.size()]);
         add(myArray);
 
         // bind using naming convention
-        binder.bindInstanceFields(this);
+        //binder.bindInstanceFields(this);
+        for (String tf : fields.keySet()) {
+            Binder.Binding<T, String> bind = binder.bind(fields.get(tf), tf);
+            System.out.println(bind);
+        }
+
 
         // Configure and style components
         setSpacing(true);
@@ -112,7 +122,7 @@ public class AbstractEditor<T extends Customer, R extends JpaRepository> extends
         setVisible(true);
 
         // Focus first name initially
-        fields.get(0).focus();
+        fields.values().iterator().next().focus();
     }
 
     public void setChangeHandler(AbstractEditor.ChangeHandler h) {
