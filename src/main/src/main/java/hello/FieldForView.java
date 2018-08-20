@@ -1,6 +1,10 @@
 package hello;
 
 import com.vaadin.flow.component.Component;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -56,35 +60,14 @@ public class FieldForView<T> {
         return retFieldProperty;
     }
 
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class FieldProperty {
         private String displayName;
         private String fieldName;
         private Component mappedField;
-
-
-        public String getFieldName() {
-            return fieldName;
-        }
-
-        public void setFieldName(String fieldName) {
-            this.fieldName = fieldName;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-
-        public void setDisplayName(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public Component getMappedField() {
-            return mappedField;
-        }
-
-        public void setMappedField(Component mappedField) {
-            this.mappedField = mappedField;
-        }
     }
 }
 

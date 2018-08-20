@@ -1,8 +1,23 @@
 package hello;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import java.util.Date;
 
 @Entity
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+
+
 public class Customer {
 
     @Id
@@ -16,56 +31,17 @@ public class Customer {
     @ViewColumn(displayName = "lastName_колонка")
     private String lastName;
 
+    @ViewColumn(displayName = "salary_колонка")
+    private Integer salary;
+
+    @ViewColumn(displayName = "salary_колонка")
+    private Date deteBirth;
+
     @ViewColumn(displayName = "Тип колонка")
     @ManyToOne
     private TypeCustomer typeCustomer;
 
-    public Customer() {
-    }
-
-    public Customer(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public Customer(String firstName, String lastName, TypeCustomer typeCustomer) {
-        this(firstName,lastName );
-        this.typeCustomer = typeCustomer;
-    }
-
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    public Long getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public TypeCustomer getTypeCustomer() {
-        return typeCustomer;
-    }
-
-    public void setTypeCustomer(TypeCustomer typeCustomer) {
-        this.typeCustomer = typeCustomer;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Customer[id=%d, firstName='%s', lastName='%s']", id,
-                firstName, lastName);
-    }
+    @ViewColumn(displayName = "Женат")
+    private boolean married;
 
 }

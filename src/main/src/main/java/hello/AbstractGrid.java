@@ -14,17 +14,13 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class AbstractGrid<T extends Customer, R extends JpaRepository> extends VerticalLayout {
-    private Class<T> type;
-
-    private final R repo;
-
-//    private final CustomerEditor editor;
-
     final com.vaadin.flow.component.grid.Grid<T> grid;
-
     final TextField filter;
 
+    //    private final CustomerEditor editor;
+    private final R repo;
     private final Button addNewBtn;
+    private Class<T> type;
 
     public AbstractGrid(R repo, AbstractEditor editor, Class<T> type) {
         this.type = type;

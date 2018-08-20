@@ -13,31 +13,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /*
 @SpringComponent
 @UIScope
 */
 public class AbstractEditor<T extends Customer, R extends JpaRepository> extends VerticalLayout implements KeyNotifier {
-    private Class<T> type;
-
     private final R repository;
-
-    private T customer;
-
     /* Fields to edit properties in Customer entity */
     Map<String, TextField> fields = new HashMap<>();
-//    TextField firstName = new TextField("First name");
-//    TextField lastName = new TextField("Last name");
-
     /* Action buttons */
     Button save = new Button("Save", VaadinIcon.CHECK.create());
     Button cancel = new Button("Cancel");
+    //    TextField firstName = new TextField("First name");
+//    TextField lastName = new TextField("Last name");
     Button delete = new Button("Delete", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
     Binder<T> binder;
-
+    private Class<T> type;
+    private T customer;
     private AbstractEditor.ChangeHandler changeHandler;
 
 
@@ -51,10 +45,9 @@ public class AbstractEditor<T extends Customer, R extends JpaRepository> extends
 
         final Map<String, FieldForView.FieldProperty> fieldsForView = new FieldForView<>(type).getListFields();
         final Set<String> fieldNameSet = fieldsForView.keySet();
-        for (String fieldName:fieldNameSet){
-            fields.put(fieldName, new TextField(fieldsForView.get(fieldName).getDisplayName()) );
+        for (String fieldName : fieldNameSet) {
+            fields.put(fieldName, new TextField(fieldsForView.get(fieldName).getDisplayName()));
         }
-
 
 
         List<Component> components = new ArrayList<>(fields.size() + 1);
@@ -96,10 +89,6 @@ public class AbstractEditor<T extends Customer, R extends JpaRepository> extends
         changeHandler.onChange();
     }
 
-    public interface ChangeHandler {
-        void onChange();
-    }
-
     public final void editCustomer(T c) {
         if (c == null) {
             setVisible(false);
@@ -129,6 +118,10 @@ public class AbstractEditor<T extends Customer, R extends JpaRepository> extends
         // ChangeHandler is notified when either save or delete
         // is clicked
         changeHandler = h;
+    }
+
+    public interface ChangeHandler {
+        void onChange();
     }
 
 

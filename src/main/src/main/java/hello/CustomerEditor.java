@@ -1,13 +1,19 @@
 package hello;
-import com.vaadin.flow.component.HasValue;
+
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.converter.LocalDateToDateConverter;
+import com.vaadin.flow.data.converter.StringToBooleanConverter;
+import com.vaadin.flow.data.converter.StringToDateConverter;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @SpringComponent
 @UIScope
-@Deprecated
 public class CustomerEditor extends VerticalLayout implements KeyNotifier {
 
     private final CustomerRepository repository;
@@ -35,6 +40,14 @@ public class CustomerEditor extends VerticalLayout implements KeyNotifier {
     /* Fields to edit properties in Customer entity */
     TextField firstName = new TextField("First name");
     TextField lastName = new TextField("Last name");
+    TextField salary = new TextField("Salary");
+
+    //TextField dateBirth = new TextField("Date Birth");
+    DatePicker dateBirth = new DatePicker("Date Birth");
+
+    //TextField married = new TextField("Married");
+    Checkbox married = new Checkbox("Married");
+
 
     /* Action buttons */
     // TODO why more code?
@@ -50,10 +63,38 @@ public class CustomerEditor extends VerticalLayout implements KeyNotifier {
     public CustomerEditor(CustomerRepository repository) {
         this.repository = repository;
 
-        add(firstName, lastName, actions);
+        add(firstName, lastName, salary, dateBirth,married, actions);
 
         // bind using naming convention
-        binder.bindInstanceFields(this);
+        //binder.bindInstanceFields(this);
+
+        binder.forField(firstName)
+                .withNullRepresentation("")
+                .bind(Customer::getFirstName, Customer::setFirstName);
+
+        binder.forField(lastName)
+                .withNullRepresentation("")
+                .bind(Customer::getLastName, Customer::setLastName);
+
+        binder.forField(salary)
+                .withNullRepresentation("")
+                .withConverter(
+                        new StringToIntegerConverter(Integer.valueOf(0), "integers only"))
+                .bind(Customer::getSalary, Customer::setSalary);
+
+        binder.forField(dateBirth)
+                .withNullRepresentation(null)
+                .withConverter(
+                        new LocalDateToDateConverter())
+                .bind(Customer::getDeteBirth, Customer::setDeteBirth);
+
+
+        binder.forField(married)
+                .withNullRepresentation(null)
+//                .withConverter(
+//                        new StringToBooleanConverter("1 or 0 needed"))
+                .bind(Customer::isMarried, Customer::setMarried);
+
 
         // Configure and style components
         setSpacing(true);
@@ -93,8 +134,7 @@ public class CustomerEditor extends VerticalLayout implements KeyNotifier {
         if (persisted) {
             // Find fresh entity for editing
             customer = repository.findById(c.getId()).get();
-        }
-        else {
+        } else {
             customer = c;
         }
         cancel.setVisible(persisted);
@@ -115,5 +155,4 @@ public class CustomerEditor extends VerticalLayout implements KeyNotifier {
         // is clicked
         changeHandler = h;
     }
-
 }

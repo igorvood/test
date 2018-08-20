@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Calendar;
+
 @SpringBootApplication
 public class Application {
 
@@ -18,34 +20,35 @@ public class Application {
         SpringApplication.run(Application.class);
     }
 
-
-
     @Autowired
     private ApplicationContext applicationContext;
 
     @Bean
     public CommandLineRunner loadData(CustomerRepository repository) {
         return (args) -> {
-            System.out.println(applicationContext);
 
             TypeCustomerRepository bean = applicationContext.getBean(TypeCustomerRepository.class);
-            final TypeCustomer type_1 = bean.save(new TypeCustomer("type_1"));
-            final TypeCustomer type_2 = bean.save(new TypeCustomer("type_2"));
 
+            final TypeCustomer type_1 = bean.save(TypeCustomer.builder().code("type_1").build());
+            final TypeCustomer type_2 = bean.save(TypeCustomer.builder().code("type_2").build());
+
+
+            Customer customer1 = Customer.builder()
+                    .firstName("Игорь")
+                    .lastName("Вуд")
+                    .salary(1000)
+                    .typeCustomer(type_2)
+                    .deteBirth(Calendar.getInstance().getTime())
+                    .married(true)
+                    .build();
 
             // save a couple of customers
-            repository.save(new Customer("Jack", "Bauer",type_1));
-            repository.save(new Customer("Chloe", "O'Brian", type_2));
-            repository.save(new Customer("Kim", "Bauer"));
-            repository.save(new Customer("David", "Palmer"));
-            repository.save(new Customer("Michelle", "Dessler"));
-/*
-            for (int i=0; i<100; i++){
-                repository.save(new Customer("Jack_"+i, "Bauer_"+i));
-            }
-*/
-
-
+            repository.save(customer1);
+            repository.save(new Customer(null, "Jack", "Bauer", 0, null, null, false));
+            repository.save(new Customer(null, "Chloe", "O'Brian", 0, null, null,false));
+            repository.save(new Customer(null, "Kim", "Bauer", 0, null, null,false));
+            repository.save(new Customer(null, "David", "Palmer", 0, null, null,false));
+            repository.save(new Customer(null, "Michelle", "Dessler", 0, null, null,false));
 
             // fetch all customers
             log.info("Customers found with findAll():");

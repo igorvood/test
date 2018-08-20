@@ -12,16 +12,16 @@ import org.springframework.util.StringUtils;
 
 @Route(value = "mainView123")
 //@Route
-public class MainView123  extends VerticalLayout {
-    private final CustomerRepository repo;
+public class MainView123 extends VerticalLayout {
+    private CustomerRepository repo;
 
-    private final CustomerEditor editor;
+    private CustomerEditor editor;
 
-    final Grid<Customer> grid;
+    private Grid<Customer> grid;
 
-    final TextField filter;
+    private TextField filter;
 
-    private final Button addNewBtn;
+    private Button addNewBtn;
 
     public MainView123(CustomerRepository repo, CustomerEditor editor) {
         this.repo = repo;
@@ -35,7 +35,8 @@ public class MainView123  extends VerticalLayout {
         add(actions, grid, editor);
 
         grid.setHeight("500px");
-        grid.setColumns("id", "firstName", "lastName");
+        grid.setColumns("id", "firstName", "lastName", "salary", "deteBirth", "typeCustomer", "married");
+
         grid.setPageSize(2);
         grid.getColumnByKey("id").setWidth("150px").setFlexGrow(0);
 
@@ -53,7 +54,7 @@ public class MainView123  extends VerticalLayout {
         });
 
         // Instantiate and edit new Customer the new button is clicked
-        addNewBtn.addClickListener(e -> editor.editCustomer(new Customer("", "")));
+        addNewBtn.addClickListener(e -> editor.editCustomer(new Customer()));
 
         // Listen changes made by the editor, refresh data from backend
         editor.setChangeHandler(() -> {
@@ -70,8 +71,7 @@ public class MainView123  extends VerticalLayout {
         if (StringUtils.isEmpty(filterText)) {
 
             grid.setItems(repo.findAll());
-        }
-        else {
+        } else {
             grid.setItems(repo.findByLastNameStartsWithIgnoreCase(filterText));
         }
     }
