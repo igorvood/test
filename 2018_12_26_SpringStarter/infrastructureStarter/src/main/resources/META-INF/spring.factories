@@ -1,0 +1,9 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+ru.vood.infrastructure.environmentPostProcessors.DeveloperProfilerResolverEnvironmentPostProcessor
+
+org.springframework.context.ApplicationContextInitializer=\
+ru.vood.infrastructure.contextInitializer.ProfileSentinelApplicationInitializer,\
+ru.vood.infrastructure.contextInitializer.TuneApplicationContextInitializer
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ru.vood.infrastructure.conf.NotificationConfiguration
